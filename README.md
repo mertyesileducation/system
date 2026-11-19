@@ -7,6 +7,6 @@ Biz de bunları daha iyi tanıyabilmek için burayı inşa ediyoruz.
 
 > 🚧 Yapım aşamasındadır.
 
-**Yardım merkezi:** [iletisim@mertyesil.com.tr](mailto:iletisim@mertyesil.com.tr) · [mertyesil.com.tr/yonetim](https://mertyesil.com.tr/yonetim/)
+**Online destek merkezi:** [mertyesil.com.tr/yonetim](https://mertyesil.com.tr/yonetim/) · **E-posta:** [iletisim@mertyesil.com.tr](mailto:iletisim@mertyesil.com.tr)
 
 [mertyesil.com.tr](https://mertyesil.com.tr) · Site: https://system.mertyesil.com.tr
