@@ -1,1 +1,157 @@
-Yakında buradayız
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kan Tahlili Projesi</title>
+  <meta name="description" content="Vücudumuzu dev bir şehir gibi hayal edelim. Kan tahlilindeki değerleri, bu şehrin çalışanlarını daha iyi tanımak için inşa ediyoruz.">
+  <style>
+    :root {
+      --bg: #fdf8f6;
+      --surface: #ffffff;
+      --text: #2a1f1f;
+      --muted: #6b5a5a;
+      --accent: #b3261e;
+      --accent-soft: #fbe4e2;
+      --border: #efdeda;
+      --warn-bg: #fff4d6;
+      --warn-text: #7a5600;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #171213;
+        --surface: #221a1b;
+        --text: #f3eaea;
+        --muted: #b8a7a7;
+        --accent: #ff8a80;
+        --accent-soft: #3a2324;
+        --border: #3a2e2f;
+        --warn-bg: #3a3017;
+        --warn-text: #f5d58a;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+    }
+    main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 48px 16px 32px;
+    }
+    .badge {
+      display: inline-block;
+      background: var(--warn-bg);
+      color: var(--warn-text);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 20px;
+    }
+    .eyebrow {
+      color: var(--accent);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      margin: 0 0 8px;
+    }
+    h1 {
+      font-size: clamp(2rem, 6vw, 2.8rem);
+      line-height: 1.15;
+      margin: 0 0 24px;
+    }
+    .intro p {
+      font-size: 1.15rem;
+      margin: 0 0 12px;
+    }
+    .intro p.lead { font-size: 1.3rem; font-weight: 600; }
+    .workers {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 36px 0;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .card .icon {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      display: grid; place-items: center;
+      font-size: 1.4rem;
+      margin-bottom: 12px;
+    }
+    .card h2 { font-size: 1.05rem; margin: 0 0 4px; }
+    .card p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+    .closing {
+      border-left: 4px solid var(--accent);
+      padding: 4px 0 4px 16px;
+      font-size: 1.1rem;
+      margin: 0 0 40px;
+    }
+    footer {
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    footer h3 { color: var(--text); font-size: 1rem; margin: 0 0 8px; }
+    footer ul { list-style: none; padding: 0; margin: 0 0 16px; }
+    footer li { margin: 4px 0; }
+    a { color: var(--accent); }
+    .small { font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <span class="badge">🚧 Yapım aşamasındadır</span>
+    <p class="eyebrow">Kan Tahlili Projesi</p>
+    <h1>Giriş</h1>
+
+    <section class="intro">
+      <p class="lead">Vücudumuzu dev bir şehir gibi hayal edelim.</p>
+      <p>Bu şehirde milyonlarca çalışan var ve her biri hayati bir görev üstleniyor.</p>
+      <p>Kimi oksijen taşıyor, kimi mikroplarla savaşıyor, kimi ise hasar gören yerleri onarıyor.</p>
+    </section>
+
+    <section class="workers" aria-label="Şehrin çalışanları">
+      <div class="card">
+        <div class="icon" aria-hidden="true">🫁</div>
+        <h2>Oksijen taşıyanlar</h2>
+        <p>Şehrin her köşesine oksijen ulaştıran kuryeler.</p>
+      </div>
+      <div class="card">
+        <div class="icon" aria-hidden="true">🛡️</div>
+        <h2>Mikroplarla savaşanlar</h2>
+        <p>Şehri istilacılara karşı koruyan savunma birlikleri.</p>
+      </div>
+      <div class="card">
+        <div class="icon" aria-hidden="true">🛠️</div>
+        <h2>Onarım ekipleri</h2>
+        <p>Hasar gören yerleri hızla kapatan tamirciler.</p>
+      </div>
+    </section>
+
+    <p class="closing">Biz de bu çalışanları daha iyi tanıyabilmek için burayı inşa ediyoruz.</p>
+
+    <footer>
+      <h3>Yardım merkezi</h3>
+      <ul>
+        <li>E-posta: <a href="mailto:iletisim@mertyesil.com.tr">iletisim@mertyesil.com.tr</a></li>
+        <li>Yönetim: <a href="https://mertyesil.com.tr/yonetim/">mertyesil.com.tr/yonetim</a></li>
+      </ul>
+      <p class="small"><a href="https://mertyesil.com.tr">mertyesil.com.tr</a></p>
+    </footer>
+  </main>
+</body>
+</html>
