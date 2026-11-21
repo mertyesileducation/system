@@ -2,9 +2,19 @@
 <html lang="tr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Kan Tahlili Projesi</title>
-  <meta name="description" content="Vücudumuzu dev bir şehir gibi hayal edelim. Kan tahlilindeki değerleri, bu şehrin çalışanlarını daha iyi tanımak için inşa ediyoruz.">
+  <meta name="description" content="Vücudumuzu dev bir şehir gibi hayal edelim. Tahlilinizdeki QR kodu okutun, her değerin ne anlattığını videolarla öğrenin.">
+  <meta name="theme-color" content="#b3261e" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#171213" media="(prefers-color-scheme: dark)">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Kan Tahlili">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <style>
     :root {
       --bg: #fdf8f6;
@@ -12,10 +22,15 @@
       --text: #2a1f1f;
       --muted: #6b5a5a;
       --accent: #b3261e;
+      --accent-ink: #ffffff;
       --accent-soft: #fbe4e2;
       --border: #efdeda;
       --warn-bg: #fff4d6;
       --warn-text: #7a5600;
+      --low: #1d5fa8;   --low-soft: #e2eefb;
+      --ok: #1f7a43;    --ok-soft: #e1f4e8;
+      --high: #b3261e;  --high-soft: #fbe4e2;
+      --radius: 16px;
     }
     @media (prefers-color-scheme: dark) {
       :root {
@@ -24,137 +39,227 @@
         --text: #f3eaea;
         --muted: #b8a7a7;
         --accent: #ff8a80;
+        --accent-ink: #2a0d0b;
         --accent-soft: #3a2324;
         --border: #3a2e2f;
         --warn-bg: #3a3017;
         --warn-text: #f5d58a;
+        --low: #8cc0ff;   --low-soft: #1c2a3b;
+        --ok: #7fd6a0;    --ok-soft: #1a3024;
+        --high: #ff8a80;  --high-soft: #3a2324;
       }
     }
     * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
     body {
       margin: 0;
       background: var(--bg);
       color: var(--text);
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
       line-height: 1.6;
+      -webkit-tap-highlight-color: transparent;
     }
-    html, body { height: 100%; }
-    body { overflow: hidden; }
     main {
       max-width: 760px;
-      height: 100dvh;
       margin: 0 auto;
-      padding: clamp(12px, 3vh, 40px) 16px clamp(10px, 2vh, 24px);
+      padding: calc(env(safe-area-inset-top) + 20px) 16px calc(env(safe-area-inset-bottom) + 24px);
       display: flex;
       flex-direction: column;
-      justify-content: safe center;
-      gap: clamp(8px, 2vh, 20px);
+      gap: 20px;
     }
+    [hidden] { display: none !important; }
+
+    /* Üst bar */
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+    .brand img { width: 32px; height: 32px; border-radius: 9px; }
     .badge {
-      display: inline-block;
-      background: var(--warn-bg);
-      color: var(--warn-text);
-      font-size: 0.85rem;
-      font-weight: 600;
-      padding: 4px 12px;
-      border-radius: 999px;
-      align-self: flex-start;
+      background: var(--warn-bg); color: var(--warn-text);
+      font-size: 0.75rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; white-space: nowrap;
     }
-    .eyebrow {
-      color: var(--accent);
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      margin: 0 0 8px;
+
+    /* Butonlar */
+    .btn {
+      appearance: none; border: 0; cursor: pointer; font: inherit; font-weight: 700;
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      border-radius: 14px; padding: 14px 20px; text-decoration: none;
+      transition: transform .12s ease, opacity .12s ease;
     }
-    h1 {
-      font-size: clamp(1.6rem, 5vh, 2.6rem);
-      line-height: 1.15;
-      margin: 0;
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: var(--accent); color: var(--accent-ink); font-size: 1.1rem; padding: 18px 22px; }
+    .btn-ghost { background: var(--accent-soft); color: var(--accent); }
+    .btn-plain { background: transparent; color: var(--muted); padding: 10px 12px; font-weight: 600; }
+    .btn svg { width: 24px; height: 24px; flex: none; }
+
+    /* Hero */
+    .eyebrow { color: var(--accent); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: .8rem; margin: 0 0 6px; }
+    h1 { font-size: clamp(1.8rem, 6vw, 2.6rem); line-height: 1.12; margin: 0 0 12px; }
+    .hero p { margin: 0 0 6px; font-size: 1.05rem; }
+    .hero .lead { font-size: 1.2rem; font-weight: 600; }
+    .cta { display: flex; flex-direction: column; gap: 10px; }
+    .cta small { color: var(--muted); text-align: center; }
+
+    /* Adımlar */
+    .steps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; counter-reset: s; }
+    .steps li { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; font-size: .92rem; line-height: 1.4; counter-increment: s; }
+    .steps li::before {
+      content: counter(s); display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%;
+      background: var(--accent-soft); color: var(--accent); font-weight: 800; margin-bottom: 8px;
     }
-    .intro p {
-      font-size: clamp(0.95rem, 2.2vh, 1.15rem);
-      margin: 0 0 4px;
+    .steps strong { display: block; margin-bottom: 2px; }
+    .steps span { color: var(--muted); }
+
+    h2.section { font-size: 1.15rem; margin: 6px 0 0; }
+
+    /* Çalışan kartları */
+    .workers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+    .card .icon { width: 44px; height: 44px; border-radius: 50%; background: var(--accent-soft); display: grid; place-items: center; font-size: 1.4rem; margin-bottom: 8px; }
+    .card h3 { font-size: 1rem; margin: 0 0 2px; line-height: 1.3; }
+    .card p { margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.4; }
+
+    .closing { border-left: 4px solid var(--accent); padding: 4px 0 4px 16px; margin: 0; }
+
+    /* Yükleme kartı */
+    .install {
+      display: flex; align-items: center; gap: 14px; background: var(--surface);
+      border: 1px dashed var(--accent); border-radius: var(--radius); padding: 14px 16px;
     }
-    .intro p.lead { font-size: clamp(1.05rem, 2.6vh, 1.3rem); font-weight: 600; }
-    .workers {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: clamp(8px, 1.5vh, 16px);
-    }
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: clamp(10px, 2vh, 20px);
-    }
-    .card .icon {
-      width: clamp(32px, 5vh, 44px); height: clamp(32px, 5vh, 44px);
-      border-radius: 50%;
-      background: var(--accent-soft);
-      display: grid; place-items: center;
-      font-size: clamp(1rem, 2.6vh, 1.4rem);
-      margin-bottom: 8px;
-    }
-    .card h2 { font-size: clamp(0.85rem, 2vh, 1.05rem); margin: 0 0 2px; line-height: 1.3; }
-    .card p { margin: 0; color: var(--muted); font-size: clamp(0.78rem, 1.8vh, 0.95rem); line-height: 1.4; }
-    @media (max-width: 520px) {
-      .workers { grid-template-columns: 1fr; }
-      .card { display: grid; grid-template-columns: auto 1fr; column-gap: 12px; align-items: center; }
-      .card .icon { grid-row: span 2; margin: 0; width: 30px; height: 30px; font-size: 1rem; }
-      .card { padding: 8px 12px; }
-      main { gap: 10px; }
-      .intro p { line-height: 1.4; font-size: 0.93rem; }
-      .intro p.lead { font-size: 1.02rem; }
-      .closing { font-size: 0.93rem; line-height: 1.4; }
-      .card p { font-size: 0.78rem; }
-      .badge { font-size: 0.75rem; padding: 2px 10px; }
-    }
-    .closing {
-      border-left: 4px solid var(--accent);
-      padding: 4px 0 4px 16px;
-      font-size: clamp(0.95rem, 2.2vh, 1.1rem);
-      margin: 0;
-    }
-    footer {
-      border-top: 1px solid var(--border);
-      padding-top: clamp(8px, 1.5vh, 16px);
-      color: var(--muted);
-      font-size: clamp(0.82rem, 1.9vh, 0.95rem);
-    }
+    .install img { width: 48px; height: 48px; border-radius: 12px; flex: none; }
+    .install div { flex: 1; line-height: 1.35; }
+    .install strong { display: block; }
+    .install span { color: var(--muted); font-size: .9rem; }
+
+    footer { border-top: 1px solid var(--border); padding-top: 14px; color: var(--muted); font-size: .92rem; }
     footer p { margin: 2px 0; }
     footer strong { color: var(--text); }
     a { color: var(--accent); }
-    .small { font-size: 0.85rem; }
+    .disclaimer { font-size: .82rem; color: var(--muted); }
+
+    /* Sonuç ekranı */
+    .results-head { display: flex; align-items: center; gap: 8px; }
+    .results-head h1 { margin: 0; font-size: 1.6rem; }
+    .summary { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pill { font-size: .85rem; font-weight: 700; padding: 4px 12px; border-radius: 999px; }
+    .pill.dusuk { background: var(--low-soft); color: var(--low); }
+    .pill.normal { background: var(--ok-soft); color: var(--ok); }
+    .pill.yuksek { background: var(--high-soft); color: var(--high); }
+    .result { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .result-top { padding: 16px 16px 12px; display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: start; }
+    .result-top h3 { margin: 0; font-size: 1.05rem; line-height: 1.3; }
+    .result-top .who { grid-column: 1; color: var(--muted); font-size: .85rem; line-height: 1.3; }
+    .result-top .pill { grid-row: 1 / span 2; grid-column: 2; align-self: center; }
+    .value { padding: 0 16px; display: flex; align-items: baseline; gap: 6px; }
+    .value b { font-size: 1.8rem; line-height: 1; }
+    .value span { color: var(--muted); font-size: .9rem; }
+    .range { padding: 10px 16px 14px; }
+    .bar { position: relative; height: 8px; border-radius: 99px; background: linear-gradient(90deg, var(--low-soft) 0 25%, var(--ok-soft) 25% 75%, var(--high-soft) 75% 100%); }
+    .bar i { position: absolute; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; border: 3px solid var(--surface); box-shadow: 0 0 0 1px var(--border); }
+    .bar i.dusuk { background: var(--low); } .bar i.normal { background: var(--ok); } .bar i.yuksek { background: var(--high); }
+    .range-labels { display: flex; justify-content: space-between; font-size: .78rem; color: var(--muted); margin-top: 4px; padding: 0 22%; }
+    .video-wrap { background: #000; aspect-ratio: 16 / 9; position: relative; }
+    .video-wrap video { width: 100%; height: 100%; display: block; }
+    .video-soon { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; color: #d9c9c9; background: repeating-linear-gradient(135deg, #1e1718 0 14px, #251c1d 14px 28px); padding: 16px; font-size: .95rem; }
+    .video-soon b { display: block; color: #fff; font-size: 1.05rem; }
+    .unknown { font-size: .9rem; color: var(--muted); }
+
+    /* Tarayıcı (kamera) */
+    .scanner { position: fixed; inset: 0; z-index: 50; background: #000; color: #fff; display: flex; flex-direction: column; }
+    .scanner video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .scanner .frame {
+      position: absolute; left: 50%; top: 45%; width: min(70vw, 300px); aspect-ratio: 1; transform: translate(-50%, -50%);
+      border-radius: 22px; box-shadow: 0 0 0 100vmax rgba(0,0,0,.55);
+    }
+    .scanner .frame::before {
+      content: ""; position: absolute; inset: -4px;
+      --c: #fff; --l: 44px; --w: 4px;
+      background:
+        linear-gradient(var(--c), var(--c)) top left / var(--l) var(--w),
+        linear-gradient(var(--c), var(--c)) top left / var(--w) var(--l),
+        linear-gradient(var(--c), var(--c)) top right / var(--l) var(--w),
+        linear-gradient(var(--c), var(--c)) top right / var(--w) var(--l),
+        linear-gradient(var(--c), var(--c)) bottom left / var(--l) var(--w),
+        linear-gradient(var(--c), var(--c)) bottom left / var(--w) var(--l),
+        linear-gradient(var(--c), var(--c)) bottom right / var(--l) var(--w),
+        linear-gradient(var(--c), var(--c)) bottom right / var(--w) var(--l);
+      background-repeat: no-repeat;
+    }
+    .scanner .frame::after { content: ""; position: absolute; left: 8%; right: 8%; top: 50%; height: 2px; background: #ff8a80; box-shadow: 0 0 12px #ff8a80; animation: scan 2.2s ease-in-out infinite; }
+    @keyframes scan { 0%,100% { transform: translateY(calc(min(70vw, 300px) * -0.4)); } 50% { transform: translateY(calc(min(70vw, 300px) * 0.4)); } }
+    @media (prefers-reduced-motion: reduce) { .scanner .frame::after { animation: none; } }
+    .scanner-top, .scanner-bottom { position: relative; z-index: 2; padding: 16px; display: flex; align-items: center; gap: 12px; }
+    .scanner-top { padding-top: calc(env(safe-area-inset-top) + 16px); justify-content: space-between; }
+    .scanner-bottom { margin-top: auto; flex-direction: column; padding-bottom: calc(env(safe-area-inset-bottom) + 24px); text-align: center; }
+    .scanner .hint { font-size: 1rem; font-weight: 600; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
+    .scanner .err { background: rgba(179,38,30,.92); padding: 10px 14px; border-radius: 12px; font-size: .92rem; max-width: 420px; }
+    .round { width: 46px; height: 46px; border-radius: 50%; border: 0; background: rgba(255,255,255,.18); color: #fff; display: grid; place-items: center; cursor: pointer; }
+    .round svg { width: 22px; height: 22px; }
+    .scanner .btn-light { background: #fff; color: #2a1f1f; }
+
+    .toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 20px); transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: .92rem; z-index: 60; max-width: 90vw; }
+
+    @media (max-width: 560px) {
+      .steps, .workers { grid-template-columns: 1fr; }
+      .steps li { display: grid; grid-template-columns: auto 1fr; column-gap: 12px; align-items: center; }
+      .steps li::before { grid-row: span 2; margin: 0; }
+      .card { display: grid; grid-template-columns: auto 1fr; column-gap: 12px; align-items: center; padding: 12px 14px; }
+      .card .icon { grid-row: span 2; margin: 0; width: 38px; height: 38px; font-size: 1.15rem; }
+    }
   </style>
 </head>
 <body>
-  <main>
-    <span class="badge">🚧 Yapım aşamasındadır</span>
-    <p class="eyebrow">Kan Tahlili Projesi</p>
-    <h1>Giriş</h1>
+  <!-- ANA SAYFA -->
+  <main id="home">
+    <div class="topbar">
+      <div class="brand"><img src="icons/icon-192.png" alt="" width="32" height="32"> Kan Tahlili</div>
+      <span class="badge">🚧 Yapım aşamasında</span>
+    </div>
 
-    <section class="intro">
+    <section class="hero">
+      <p class="eyebrow">Kan Tahlili Projesi</p>
+      <h1>Tahlilinizi okutun, şehrinizi tanıyın.</h1>
       <p class="lead">Vücudumuzu dev bir şehir gibi hayal edelim.</p>
-      <p>Bu şehirde milyonlarca çalışan var ve her biri hayati bir görev üstleniyor.</p>
-      <p>Kimi oksijen taşıyor, kimi mikroplarla savaşıyor, kimi ise hasar gören yerleri onarıyor.</p>
+      <p>Bu şehirde milyonlarca çalışan var. Tahlil sonucunuzun köşesindeki QR kodu okutun; her değerin ne anlattığını kısa videolarla izleyin.</p>
     </section>
 
+    <div class="cta">
+      <button class="btn btn-primary" id="scanBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="4" height="4"/><rect x="13" y="13" width="4" height="4"/><path d="M13 7h4v2M7 15v2h2"/></svg>
+        QR Kodu Okut
+      </button>
+      <button class="btn btn-plain" id="demoBtn" type="button">Örnek bir tahlille dene</button>
+    </div>
+
+    <ol class="steps" aria-label="Nasıl çalışır">
+      <li><strong>Okutun</strong><span>Tahlil kağıdının köşesindeki QR kodu kameraya gösterin.</span></li>
+      <li><strong>Görün</strong><span>Her değer düşük, normal veya yüksek olarak işaretlenir.</span></li>
+      <li><strong>İzleyin</strong><span>Değerinize uygun videoyla ne olup bittiğini öğrenin.</span></li>
+    </ol>
+
+    <div class="install" id="installCard" hidden>
+      <img src="icons/icon-192.png" alt="" width="48" height="48">
+      <div>
+        <strong>Uygulamayı telefonunuza ekleyin</strong>
+        <span id="installText">Ana ekrandan tek dokunuşla açın, internet olmadan da çalışsın.</span>
+      </div>
+      <button class="btn btn-ghost" id="installBtn" type="button">Yükle</button>
+    </div>
+
+    <h2 class="section">Şehrin çalışanları</h2>
     <section class="workers" aria-label="Şehrin çalışanları">
       <div class="card">
         <div class="icon" aria-hidden="true">🫁</div>
-        <h2>Oksijen taşıyanlar</h2>
+        <h3>Oksijen taşıyanlar</h3>
         <p>Şehrin her köşesine oksijen ulaştıran kuryeler.</p>
       </div>
       <div class="card">
         <div class="icon" aria-hidden="true">🛡️</div>
-        <h2>Mikroplarla savaşanlar</h2>
+        <h3>Mikroplarla savaşanlar</h3>
         <p>Şehri istilacılara karşı koruyan savunma birlikleri.</p>
       </div>
       <div class="card">
         <div class="icon" aria-hidden="true">🛠️</div>
-        <h2>Onarım ekipleri</h2>
+        <h3>Onarım ekipleri</h3>
         <p>Hasar gören yerleri hızla kapatan tamirciler.</p>
       </div>
     </section>
@@ -164,7 +269,52 @@
     <footer>
       <p><strong>Online destek merkezi:</strong> <a href="https://mertyesil.com.tr/yonetim/">mertyesil.com.tr/yonetim</a></p>
       <p><strong>E-posta:</strong> <a href="mailto:iletisim@mertyesil.com.tr">iletisim@mertyesil.com.tr</a> · <a href="https://mertyesil.com.tr">mertyesil.com.tr</a></p>
+      <p class="disclaimer">Bu uygulama bilgilendirme amaçlıdır, tanı koymaz. Sonuçlarınızı mutlaka hekiminizle değerlendirin.</p>
     </footer>
   </main>
+
+  <!-- SONUÇ EKRANI -->
+  <main id="results" hidden>
+    <div class="results-head">
+      <button class="round btn-ghost" id="backBtn" type="button" aria-label="Ana sayfaya dön" style="background:var(--accent-soft);color:var(--accent)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <h1>Tahlil sonuçlarınız</h1>
+    </div>
+    <div class="summary" id="summary"></div>
+    <div id="resultList" style="display:flex;flex-direction:column;gap:14px"></div>
+    <p class="unknown" id="unknownList" hidden></p>
+    <button class="btn btn-primary" id="rescanBtn" type="button">Yeni QR okut</button>
+    <p class="disclaimer">Referans aralıkları laboratuvara, yaşa ve cinsiyete göre değişebilir. Bu ekran bilgilendirme amaçlıdır, tanı koymaz; sonuçlarınızı hekiminizle değerlendirin.</p>
+  </main>
+
+  <!-- KAMERA / QR OKUYUCU -->
+  <div class="scanner" id="scanner" hidden role="dialog" aria-label="QR kod okuyucu">
+    <video id="camera" playsinline muted autoplay></video>
+    <div class="frame" aria-hidden="true"></div>
+    <div class="scanner-top">
+      <button class="round" id="closeScan" type="button" aria-label="Kapat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <button class="round" id="torchBtn" type="button" aria-label="Fener" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>
+      </button>
+    </div>
+    <div class="scanner-bottom">
+      <p class="hint" id="scanHint">QR kodu çerçevenin içine getirin</p>
+      <p class="err" id="scanErr" hidden></p>
+      <label class="btn btn-light">
+        Fotoğraftan oku
+        <input type="file" accept="image/*" id="fileInput" hidden>
+      </label>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden role="status"></div>
+
+  <canvas id="work" hidden></canvas>
+  <script src="js/tests.js"></script>
+  <script src="js/jsQR.js" defer></script>
+  <script src="js/app.js" defer></script>
 </body>
 </html>
